@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Word Vectors</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>How AI Understands Words</h1>
+            <p>This interactive demonstration shows how AI represents words as vectors in a multi-dimensional space. Words with similar meanings are located closer to each other. We can even perform "math" on words to discover relationships.</p>
+        </header>
+
+        <main>
+            <div class="vector-space-container">
+                <canvas id="vector-space"></canvas>
+            </div>
+
+            <div class="controls">
+                <div class="card">
+                    <h2><i class="fas fa-plus-circle"></i> Add a Word</h2>
+                    <p>Type a word to see where it lands in the vector space.</p>
+                    <div class="input-group">
+                        <input type="text" id="word-input" placeholder="e.g., happiness, car, computer">
+                        <button id="add-word-btn">Add Word</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-calculator"></i> Word Analogies</h2>
+                    <p>Solve analogies like "King is to Man as Queen is to Woman".</p>
+                    <div class="analogy-group">
+                        <input type="text" id="analogy-a" value="king">
+                        <span>-</span>
+                        <input type="text" id="analogy-b" value="man">
+                        <span>+</span>
+                        <input type="text" id="analogy-c" value="woman">
+                        <span>=</span>
+                        <span id="analogy-result">?</span>
+                    </div>
+                    <button id="analogy-btn">Calculate Analogy</button>
+                </div>
+                 <div class="card">
+                    <h2><i class="fas fa-magic-wand-sparkles"></i> Find Similar Words</h2>
+                    <p>Find words related to your input word.</p>
+                    <div class="input-group">
+                        <input type="text" id="similar-word-input" placeholder="e.g., royalty">
+                        <button id="find-similar-btn">Find Similar</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h2><i class="fas fa-sync-alt"></i> Recalculate Layout</h2>
+                    <p>Ask the AI to rethink the positions of all words for a better semantic layout.</p>
+                    <button id="recalculate-layout-btn">Recalculate All</button>
+                </div>
+            </div>
+            <div id="loading-indicator">
+                <div class="spinner"></div>
+                <p>AI is thinking...</p>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "canvas-confetti": "https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.module.mjs",
+            "three": "https://cdn.jsdelivr.net/npm/three@0.164.1/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.164.1/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
