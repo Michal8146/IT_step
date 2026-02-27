@@ -8,7 +8,7 @@ def home():
 
 @app.route("/greet")
 def greet():
-    return render_template('greet.html')
+    return render_template('greet.html', name = "User")
 
 @app.route("/about")
 def about():
