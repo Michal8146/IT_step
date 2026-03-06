@@ -21,8 +21,8 @@
         <label for="date">Date of Arrival:</label>
         <input type="date" id="date" name="date" required>
 
-        <label for="time">Time of Arrival:</label>
-        <input type="time" id="time" name="time" required>
+        <label for="time">Time of Arrival (24h format):</label>
+        <input type="text" id="time" name="time" pattern="([01]?[0-9]|2[0-3]):[0-5][0-9]" placeholder="HH:MM (e.g., 18:30)" title="Please use the 24-hour format (HH:MM)" required>
 
         <button type="submit">Confirm Reservation</button>
     </form>

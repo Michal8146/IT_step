@@ -3,12 +3,17 @@
 {% block content %}
     <h1>Your Profile</h1>
     
-    <p>Welcome back, <strong>{{ session.name }}</strong>!</p>
-    
-    <div style="background-color: #F5EBE0; padding: 1.5rem; border-radius: 8px; border: 1px solid #2C4A3B;">
-        <h3>Saved Details</h3>
-        <p><strong>Name:</strong> {{ session.name }}</p>
-        <p><strong>Email:</strong> {{ session.email }}</p>
-        <p><em>We use these details to automatically fill out your reservation forms so you can book faster next time.</em></p>
-    </div>
+    {% if session.name %}
+        <p>Welcome back, <strong>{{ session.name }}</strong>!</p>
+        
+        <div style="background-color: #F5EBE0; padding: 1.5rem; border-radius: 8px; border: 1px solid #2C4A3B;">
+            <h3>Saved Details</h3>
+            <p><strong>Name:</strong> {{ session.name }}</p>
+            <p><strong>Email:</strong> {{ session.email }}</p>
+            <p><em>We use these details to automatically fill out your reservation forms so you can book faster next time.</em></p>
+        </div>
+    {% else %}
+        <p>We don't have your details on file yet!</p>
+        <p>Please <a href="{{ url_for('reservation') }}" style="color: #8B3A3A; font-weight: bold;">book a table</a> first to register your profile.</p>
+    {% endif %}
 {% endblock %}
