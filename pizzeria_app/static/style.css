@@ -1,0 +1,97 @@
+/* Base Styles */
+body {
+    font-family: 'Georgia', serif;
+    background-color: #F5EBE0; /* Cozy beige */
+    color: #333333;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: #8B3A3A; /* Dark brick red */
+}
+
+/* Navigation */
+nav {
+    background-color: #2C4A3B; /* Dark green */
+    padding: 1rem;
+    text-align: center;
+}
+
+nav a {
+    color: #F5EBE0;
+    text-decoration: none;
+    margin: 0 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #8B3A3A;
+}
+
+/* Containers */
+.container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #FFFDF9;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+/* Menu Layout */
+.menu-item {
+    border-bottom: 1px dashed #2C4A3B;
+    padding: 1rem 0;
+}
+
+.price {
+    font-weight: bold;
+    color: #2C4A3B;
+    float: right;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    margin-top: 1rem;
+    color: #2C4A3B;
+    font-weight: bold;
+}
+
+input {
+    padding: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+button {
+    margin-top: 1.5rem;
+    padding: 0.75rem;
+    background-color: #2C4A3B;
+    color: #F5EBE0;
+    border: none;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #8B3A3A;
+}
+
+/* Alerts */
+.alert {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}

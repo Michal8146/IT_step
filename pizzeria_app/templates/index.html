@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="text-align: center;">
+        <h1>Welcome to Nonna's Pizzeria</h1>
+        <p>Authentic, wood-fired pizzas made with love, right in the heart of the city.</p>
+        
+        
+    </div>
+
+    <h2>Our Menu</h2>
+    <div class="menu">
+        {% for item in menu %}
+            <div class="menu-item">
+                <span class="price">{{ item.price }}</span>
+                <h3>{{ item.name }}</h3>
+                <p>{{ item.desc }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

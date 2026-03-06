@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Book a Table</h1>
+
+    {% if success %}
+        <div class="alert">
+            Thank you, {{ session.name }}! Your table is booked for {{ date }} at {{ time }}.
+        </div>
+    {% endif %}
+
+    <p>Reserve your spot by filling out the form below. Once you book, we'll remember your details for next time!</p>
+
+    <form method="POST" action="{{ url_for('reservation') }}">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ session.get('name', '') }}" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ session.get('email', '') }}" required>
+
+        <label for="date">Date of Arrival:</label>
+        <input type="date" id="date" name="date" required>
+
+        <label for="time">Time of Arrival:</label>
+        <input type="time" id="time" name="time" required>
+
+        <button type="submit">Confirm Reservation</button>
+    </form>
+{% endblock %}
