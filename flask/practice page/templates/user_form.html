@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+
+
+{% block title %}
+User form
+{% endblock %}
+
+{% block content %}
+<h1>User forms</h1>
+
+<form method="post" action="/result">
+    <input type="text" name="data"/>
+    <input type="submit"/>
+</form>
+    
+{% endblock %}
