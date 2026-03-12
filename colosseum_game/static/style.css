@@ -1,6 +1,5 @@
 body {
-    background: url('https://images.unsplash.com/photo-1552559635-15949d287410?q=80&w=2000&auto=format&fit=crop') no-repeat center center fixed;
-    background-size: cover;
+    background: #111;
     color: white;
     font-family: monospace;
     text-align: center;
@@ -14,51 +13,61 @@ body {
 
 #board {
     display: grid;
-    grid-template-columns: repeat(19, 30px);
-    grid-template-rows: repeat(19, 30px);
+    /* This creates 9 pairs of (50px tile + 12px gap) + one final 50px tile = 19 columns total */
+    grid-template-columns: repeat(9, 50px 12px) 50px;
+    grid-template-rows: repeat(9, 50px 12px) 50px;
     background-color: #222;
-    border: 10px solid #333;
+    border: 10px solid #444;
     box-shadow: 0 0 50px rgba(0,0,0,0.8);
 }
 
-/* Base Tile System */
-.tile { background-color: rgba(200, 200, 200, 0.2); cursor: pointer; }
-.gap { background-color: rgba(50, 50, 50, 0.5); cursor: pointer; }
-.gap:hover { background-color: #666; }
+/* Playable Tiles */
+.tile { background-color: rgba(200, 200, 200, 0.3); cursor: pointer; position: relative; }
+.tile:hover { background-color: rgba(255, 255, 255, 0.2); }
+
+/* Wall Gaps (Horizontal and Vertical) */
+.gap-h { background-color: rgba(0, 0, 0, 0.4); cursor: pointer; }
+.gap-h:hover { background-color: #777; }
+.gap-v { background-color: rgba(0, 0, 0, 0.4); cursor: pointer; }
+.gap-v:hover { background-color: #777; }
+
+/* The unplayable intersection where 4 corners meet */
+.intersection { background-color: #111; }
 
 /* The Physical Limestone Wall */
 .wall-placed {
-    background: url('https://upload.wikimedia.org/wikipedia/commons/4/4e/Limestone_texture.jpg');
-    background-size: cover;
-    box-shadow: inset 0 0 5px black;
+    background-color: #e0d8c8; /* Limestone color */
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
 }
 
 /* Fog of War Overlay */
 .fog {
-    background-color: rgba(255, 255, 255, 0.9) !important;
-    background-image: none !important;
+    background-color: #fff !important;
     cursor: not-allowed;
 }
 
-/* Player Graphics (Helmets from above) */
-.player1 {
-    background-image: url('https://api.iconify.design/game-icons/gladiator.svg?color=red');
-    background-size: cover;
+/* Player Graphics (CSS Gladiators) */
+.player {
+    width: 70%;
+    height: 70%;
+    border-radius: 50%;
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.5);
+    /* The "helmet" look */
+    border: 4px solid #aaa; 
+    z-index: 10;
 }
-.player2 {
-    background-image: url('https://api.iconify.design/game-icons/gladiator.svg?color=blue');
-    background-size: cover;
-}
+.p1 { background-color: #ff4444; } /* Red */
+.p2 { background-color: #4444ff; } /* Blue */
 
 /* The Ancient Eye Item */
 .item-eye {
-    background-image: url('https://api.iconify.design/game-icons/all-seeing-eye.svg?color=gold');
-    background-size: cover;
-    animation: pulse 1.5s infinite;
+    width: 50%; height: 50%;
+    background-color: gold;
+    border-radius: 50%;
+    position: absolute; top: 25%; left: 25%;
+    animation: pulse 1s infinite;
 }
-
-@keyframes pulse {
-    0% { transform: scale(0.8); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(0.8); }
-}
+@keyframes pulse { 0% { transform: scale(0.8); } 50% { transform: scale(1.2); } 100% { transform: scale(0.8); } }

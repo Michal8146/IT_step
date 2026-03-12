@@ -32,8 +32,8 @@ def has_path(start_x, start_y, target_y, walls):
         if cy == target_y:
             return True
         
-        # Check 8 directions (King Movement). Steps of 2 because tiles are at even numbers.
-        directions = [(0, -2), (0, 2), (-2, 0), (2, 0), (-2, -2), (2, -2), (-2, 2), (2, 2)]
+        # Check 4 directions (Up, Down, Left, Right). Steps of 2 because tiles are at even numbers.
+        directions = [(0, -2), (0, 2), (-2, 0), (2, 0)]
         for dx, dy in directions:
             nx, ny = cx + dx, cy + dy
             if 0 <= nx <= 18 and 0 <= ny <= 18 and (nx, ny) not in visited:
