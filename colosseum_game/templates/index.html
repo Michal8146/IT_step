@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Colosseum Fog</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="ui">
+        <h1>Select your player tab: 
+            <button onclick="setPlayer('1')">Player 1 (Top)</button>
+            <button onclick="setPlayer('2')">Player 2 (Bottom)</button>
+        </h1>
+        <h2 id="status">Waiting for setup...</h2>
+    </div>
+    
+    <div class="arena-container">
+        <div id="board"></div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
