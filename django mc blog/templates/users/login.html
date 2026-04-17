@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="max-width-form mx-auto">
+        <h2>Přihlášení do blogu</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <p>Uživatelské jméno: <input type="text" name="username" class="form-control"></p>
+            <p>Heslo: <input type="password" name="password" class="form-control"></p>
+            <button type="submit" class="btn btn-success">Vstoupit do hry</button>
+        </form>
+    </div>
+{% endblock %}

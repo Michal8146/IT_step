@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="mb-4 text-warning">Nejnovější články ze světa</h1>
+<div class="row">
+    {% for article in articles %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 border-secondary shadow-sm">
+            <div class="card-body">
+                <span class="badge {{ article.category.color_class }} mb-2">{{ article.category.name }}</span>
+                <h5 class="card-title">{{ article.title }}</h5>
+                <p class="card-text text-muted small">{{ article.excerpt }}</p>
+                <a href="{% url 'article_detail' article.id %}" class="btn btn-outline-warning btn-sm">Číst více</a>
+            </div>
+            <div class="card-footer text-muted small">
+                Autor: {{ article.author.username }} | {{ article.created_at|date:"d. m. Y" }}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Zatím nebyly publikovány žádné články.</p>
+    {% endfor %}
+</div>
+{% endblock %}

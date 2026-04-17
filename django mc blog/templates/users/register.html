@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="max-width-form mx-auto">
+        <h2>Registrace hráče</h2>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-warning">Zaregistrovat se</button>
+        </form>
+    </div>
+{% endblock %}

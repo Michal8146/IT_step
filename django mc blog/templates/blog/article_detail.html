@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<article>
+    <header class="mb-4">
+        <h1 class="fw-bolder mb-1">{{ article.title }}</h1>
+        <div class="text-muted fst-italic mb-2">
+            Publikováno {{ article.created_at }} uživatelem {{ article.author.username }}
+        </div>
+        <span class="badge {{ article.category.color_class }}">{{ article.category.name }}</span>
+    </header>
+    <section class="mb-5 bg-dark p-4 rounded border border-secondary">
+        {{ article.content|safe }}
+    </section>
+</article>
+<a href="{% url 'home' %}" class="btn btn-secondary">Zpět na přehled</a>
+{% endblock %}
