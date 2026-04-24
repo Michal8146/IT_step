@@ -15,7 +15,19 @@
                 <a class="nav-link" href="{% url 'home' %}">Domů</a>
                 
                 {% if user.is_authenticated %}
-                    <span class="nav-link text-light">Ahoj, {{ user.username }}</span>
+                    <a href="{% url 'create_article' %}" class="nav-link text-warning fw-bold">Napsat článek</a>
+
+                    <a href="{% url 'profile' %}" class="nav-link d-flex align-items-center me-3" style="text-decoration: none;">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="rounded-circle border border-warning me-2" style="width: 35px; height: 35px; object-fit: cover;">
+                        {% else %}
+                            <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center border border-warning me-2" style="width: 35px; height: 35px;">
+                                <span class="fs-6">👤</span>
+                            </div>
+                        {% endif %}
+                        <span class="text-light fw-bold">{{ user.username }}</span>
+                    </a>
+                    
                     <form action="{% url 'logout' %}" method="post" class="d-inline">
                         {% csrf_token %}
                         <button type="submit" class="nav-link btn btn-link" style="text-decoration: none;">Odhlásit se</button>

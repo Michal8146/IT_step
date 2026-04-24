@@ -10,8 +10,9 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')), # Cesty pro editor
     path('', include('blog.urls')), # Přidáno směrování na blog
     path('register/', user_views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('login/', user_views.custom_login, name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+    path('profile/', user_views.profile, name='profile'),
 ]
 
 # Toto umožní zobrazovat nahrané obrázky ze složky media/ ve vývojovém prostředí

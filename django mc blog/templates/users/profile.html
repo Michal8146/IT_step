@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card bg-dark border-secondary shadow mt-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-4">
+                    {% if user.profile.avatar %}
+                        <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="rounded-circle border border-warning" style="width: 100px; height: 100px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center border border-warning" style="width: 100px; height: 100px;">
+                            <span class="fs-1">👤</span>
+                        </div>
+                    {% endif %}
+                    <div class="ms-4">
+                        <h2 class="text-warning mb-0">{{ user.username }}</h2>
+                        <p class="text-muted">{{ user.email }}</p>
+                    </div>
+                </div>
+
+                <hr class="border-secondary">
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <h5 class="text-info mb-3">Nastavení profilu</h5>
+                    {{ u_form.as_p }}
+                    {{ p_form.as_p }}
+                    
+                    <button type="submit" class="btn btn-warning mt-3 fw-bold">Uložit změny</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

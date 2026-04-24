@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="alert alert-danger border-danger">
+    <h3 class="alert-heading">Opravdu smazat?</h3>
+    <p>Chystáš se nevratně smazat článek <strong>{{ article.title }}</strong>.</p>
+    <hr>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger fw-bold">Ano, trvale smazat</button>
+        <a href="{% url 'article_detail' article.id %}" class="btn btn-secondary">Zpět na článek</a>
+    </form>
+</div>
+{% endblock %}

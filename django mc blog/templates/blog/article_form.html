@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-dark p-4 rounded border border-secondary">
+    <h2 class="mb-4 text-warning">{{ title }}</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success mt-3">Publikovat článek</button>
+        <a href="{% url 'home' %}" class="btn btn-secondary mt-3 ms-2">Zrušit</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,12 +1,26 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="max-width-form mx-auto">
-        <h2>Přihlášení do blogu</h2>
+    <div class="max-width-form mx-auto" style="max-width: 400px;">
+        <h2 class="text-warning mb-4 text-center">Vstup do hry</h2>
+        
+        {% if show_register_link %}
+            <div class="alert alert-info text-center shadow border-info">
+                <p class="mb-2">Vypadá to, že jsi tu nový!</p>
+                <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Ano, zaregistrovat se</a>
+            </div>
+        {% endif %}
+
         <form method="POST">
             {% csrf_token %}
-            <p>Uživatelské jméno: <input type="text" name="username" class="form-control"></p>
-            <p>Heslo: <input type="password" name="password" class="form-control"></p>
-            <button type="submit" class="btn btn-success">Vstoupit do hry</button>
+            <div class="mb-3">
+                <label class="form-label">Uživatelské jméno:</label>
+                <input type="text" name="username" class="form-control border-secondary" value="{{ username }}" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Heslo:</label>
+                <input type="password" name="password" class="form-control border-secondary" required>
+            </div>
+            <button type="submit" class="btn btn-success w-100 fw-bold shadow">PŘIHLÁSIT SE</button>
         </form>
     </div>
 {% endblock %}

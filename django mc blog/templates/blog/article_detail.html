@@ -3,15 +3,65 @@
 {% block content %}
 <article>
     <header class="mb-4">
-        <h1 class="fw-bolder mb-1">{{ article.title }}</h1>
+        <h1 class="fw-bolder mb-1 text-warning">{{ article.title }}</h1>
+        
         <div class="text-muted fst-italic mb-2">
-            Publikováno {{ article.created_at }} uživatelem {{ article.author.username }}
+            Publikováno {{ article.created_at|date:"d. m. Y H:i" }} uživatelem {{ article.author.username }}
         </div>
-        <span class="badge {{ article.category.color_class }}">{{ article.category.name }}</span>
+        
+        <span class="badge {{ article.category.color_class }} mb-3">{{ article.category.name }}</span>
+
+        {% if user == article.author or user.is_staff %}
+            <div class="mt-2 mb-4">
+                <a href="{% url 'edit_article' article.id %}" class="btn btn-sm btn-outline-info">✏️ Upravit článek</a>
+                <a href="{% url 'delete_article' article.id %}" class="btn btn-sm btn-outline-danger ms-2">🗑️ Smazat</a>
+            </div>
+        {% endif %}
     </header>
-    <section class="mb-5 bg-dark p-4 rounded border border-secondary">
+
+    <section class="mb-5 bg-dark p-4 rounded border border-secondary shadow">
         {{ article.content|safe }}
     </section>
+
+    <section class="mt-5 mb-5 border-top border-secondary pt-4">
+        <h3 class="text-warning mb-4">Komentáře ({{ comments.count }})</h3>
+
+        {% if user.is_authenticated %}
+            <div class="card bg-dark border-secondary mb-5 shadow">
+                <div class="card-body">
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success fw-bold">Odeslat komentář</button>
+                    </form>
+                </div>
+            </div>
+        {% else %}
+            <div class="alert alert-secondary border-secondary text-center mb-5 shadow-sm">
+                Pro přidání komentáře se musíš <a href="{% url 'login' %}" class="fw-bold text-info">přihlásit</a> nebo <a href="{% url 'register' %}" class="fw-bold text-info">zaregistrovat</a>.
+            </div>
+        {% endif %}
+
+        <div class="comment-list">
+            {% for comment in comments %}
+                <div class="card bg-dark border-secondary mb-3 shadow-sm">
+                    <div class="card-header border-secondary text-muted small d-flex justify-content-between align-items-center">
+                        <span class="text-light fw-bold">🧑‍💻 {{ comment.author.username }}</span>
+                        <span>{{ comment.created_at|date:"d. m. Y H:i" }}</span>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-light">{{ comment.content }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-muted fst-italic text-center py-4 bg-dark rounded border border-secondary shadow-sm">
+                    Zatím tu nejsou žádné komentáře. Buď první, kdo to rozbije! ⛏️
+                </p>
+            {% endfor %}
+        </div>
+    </section>
+
 </article>
-<a href="{% url 'home' %}" class="btn btn-secondary">Zpět na přehled</a>
+
+<a href="{% url 'home' %}" class="btn btn-secondary mt-3 mb-5">← Zpět na přehled</a>
 {% endblock %}

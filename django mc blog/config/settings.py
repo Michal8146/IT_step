@@ -127,3 +127,6 @@ STATIC_URL = 'static/'
 # Pokud používáš novější Django, které nahoře v souboru definuje BASE_DIR pomocí pathlib:
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
