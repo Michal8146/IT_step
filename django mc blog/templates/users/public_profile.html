@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card bg-dark border-secondary shadow text-center p-4">
+            {% if profile_user.profile.avatar %}
+                <img src="{{ profile_user.profile.avatar.url }}" alt="Avatar" class="rounded-circle border border-warning mx-auto mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+            {% else %}
+                <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center border border-warning mx-auto mb-3" style="width: 150px; height: 150px;">
+                    <span style="font-size: 4rem;">👤</span>
+                </div>
+            {% endif %}
+            <h2 class="text-warning fw-bold">{{ profile_user.username }}</h2>
+            <p class="text-muted">Připojen: {{ profile_user.date_joined|date:"d. m. Y" }}</p>
+            
+            {% if request.user == profile_user %}
+                <a href="{% url 'profile' %}" class="btn btn-outline-info mt-2">⚙️ Upravit můj profil</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h3 class="text-light mb-4">Vydané články ({{ user_articles.count }})</h3>
+        {% for article in user_articles %}
+            <div class="card bg-dark border-secondary mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <a href="{% url 'article_detail' article.id %}" class="text-warning text-decoration-none">{{ article.title }}</a>
+                    </h5>
+                    <p class="card-text text-light small">{{ article.excerpt }}</p>
+                    <div class="text-muted fst-italic small">
+                        Vydáno: {{ article.created_at|date:"d. m. Y" }}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="alert alert-secondary border-secondary text-center">
+                Tento hráč zatím nevydal žádné články.
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -9,4 +9,6 @@ urlpatterns = [
     path('article/create/', views.create_article, name='create_article'),
     path('article/<int:id>/edit/', views.edit_article, name='edit_article'),
     path('article/<int:id>/delete/', views.delete_article, name='delete_article'),
+    path('article/<int:id>/like/', views.like_article, name='like_article'),
+    path('comment/<int:id>/like/', views.like_comment, name='like_comment'),
 ]

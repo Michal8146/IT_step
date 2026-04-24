@@ -1,14 +1,120 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="alert alert-danger border-danger">
-    <h3 class="alert-heading">Opravdu smazat?</h3>
-    <p>Chystáš se nevratně smazat článek <strong>{{ article.title }}</strong>.</p>
-    <hr>
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit" class="btn btn-danger fw-bold">Ano, trvale smazat</button>
-        <a href="{% url 'article_detail' article.id %}" class="btn btn-secondary">Zpět na článek</a>
-    </form>
+
+<div class="delete-wrapper">
+    <div class="delete-card">
+        <div class="delete-icon">🗑</div>
+        <h2 class="delete-heading">Opravdu smazat?</h2>
+        <p class="delete-body">
+            Chystáš se nevratně smazat článek
+            <span class="delete-title-highlight">„{{ article.title }}"</span>.
+            Tuto akci nelze vrátit zpět.
+        </p>
+
+        <div class="delete-divider"></div>
+
+        <form method="POST" class="delete-actions">
+            {% csrf_token %}
+            <button type="submit" class="btn-delete">Ano, trvale smazat</button>
+            <a href="{% url 'article_detail' article.id %}" class="btn-cancel">Zpět na článek</a>
+        </form>
+    </div>
 </div>
+
+<style>
+    .delete-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2rem 0 4rem;
+    }
+
+    .delete-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-mid);
+        border-top: 3px solid #b06060;
+        border-radius: var(--radius-md);
+        padding: 2.25rem 2rem;
+        max-width: 480px;
+        width: 100%;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+    }
+
+    .delete-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        opacity: 0.7;
+    }
+
+    .delete-heading {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.55rem;
+        font-weight: 400;
+        color: var(--text-primary);
+        margin: 0 0 0.75rem;
+    }
+
+    .delete-body {
+        color: var(--text-secondary);
+        font-size: 0.92rem;
+        line-height: 1.65;
+        margin: 0;
+    }
+
+    .delete-title-highlight {
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+
+    .delete-divider {
+        height: 1px;
+        background: var(--border-subtle);
+        margin: 1.5rem 0;
+    }
+
+    .delete-actions {
+        display: flex;
+        gap: 0.65rem;
+        justify-content: center;
+    }
+
+    .btn-delete {
+        background: rgba(176, 96, 96, 0.15);
+        border: 1px solid #b06060;
+        color: #d49090;
+        font-size: 0.875rem;
+        font-weight: 600;
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1.25rem;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s, transform 0.15s;
+    }
+
+    .btn-delete:hover {
+        background: rgba(176, 96, 96, 0.28);
+        color: #e8aaaa;
+        transform: translateY(-1px);
+    }
+
+    .btn-cancel {
+        display: inline-block;
+        background: var(--bg-card-hover);
+        border: 1px solid var(--border-mid);
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        font-weight: 500;
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1.25rem;
+        text-decoration: none;
+        transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .btn-cancel:hover {
+        border-color: var(--sage-muted);
+        color: var(--sage);
+        background: rgba(138,170,141,0.07);
+    }
+</style>
+
 {% endblock %}

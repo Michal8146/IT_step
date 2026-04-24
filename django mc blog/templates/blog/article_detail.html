@@ -1,67 +1,434 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<article>
-    <header class="mb-4">
-        <h1 class="fw-bolder mb-1 text-warning">{{ article.title }}</h1>
-        
-        <div class="text-muted fst-italic mb-2">
-            Publikováno {{ article.created_at|date:"d. m. Y H:i" }} uživatelem {{ article.author.username }}
+<article class="article-detail">
+
+    <header class="article-header mb-5">
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <span class="category-pill">{{ article.category.name }}</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-text">{{ article.created_at|date:"d. m. Y" }}</span>
         </div>
-        
-        <span class="badge {{ article.category.color_class }} mb-3">{{ article.category.name }}</span>
+
+        <h1 class="article-title mb-3">{{ article.title }}</h1>
+
+        <div class="author-row mb-4">
+            <a href="{% url 'public_profile' article.author.username %}" class="author-link">
+                {% if article.author.profile.avatar %}
+                    <img src="{{ article.author.profile.avatar.url }}" alt="Avatar" class="author-avatar">
+                {% else %}
+                    <div class="author-avatar-placeholder">{{ article.author.username|slice:":1"|upper }}</div>
+                {% endif %}
+                <span class="author-name">{{ article.author.username }}</span>
+            </a>
+
+            <div class="like-chip ms-auto">
+                {% if user.is_authenticated %}
+                    <form action="{% url 'like_article' article.id %}" method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="like-btn {% if user in article.likes.all %}liked{% endif %}">
+                            <span class="like-icon">{% if user in article.likes.all %}♥{% else %}♡{% endif %}</span>
+                            <span>{{ article.likes.count }}</span>
+                        </button>
+                    </form>
+                {% else %}
+                    <span class="like-static">♥ {{ article.likes.count }}</span>
+                {% endif %}
+            </div>
+        </div>
 
         {% if user == article.author or user.is_staff %}
-            <div class="mt-2 mb-4">
-                <a href="{% url 'edit_article' article.id %}" class="btn btn-sm btn-outline-info">✏️ Upravit článek</a>
-                <a href="{% url 'delete_article' article.id %}" class="btn btn-sm btn-outline-danger ms-2">🗑️ Smazat</a>
+            <div class="author-actions mb-2">
+                <a href="{% url 'edit_article' article.id %}" class="action-btn">✏ Upravit</a>
+                <a href="{% url 'delete_article' article.id %}" class="action-btn danger">🗑 Smazat</a>
             </div>
         {% endif %}
     </header>
 
-    <section class="mb-5 bg-dark p-4 rounded border border-secondary shadow">
+    <section class="article-body mb-6">
         {{ article.content|safe }}
     </section>
 
-    <section class="mt-5 mb-5 border-top border-secondary pt-4">
-        <h3 class="text-warning mb-4">Komentáře ({{ comments.count }})</h3>
+    <div class="section-divider my-5"></div>
+
+    <section class="comments-section">
+        <h3 class="comments-heading mb-4">Komentáře <span class="comment-count">{{ comments.count }}</span></h3>
 
         {% if user.is_authenticated %}
-            <div class="card bg-dark border-secondary mb-5 shadow">
-                <div class="card-body">
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-success fw-bold">Odeslat komentář</button>
-                    </form>
-                </div>
+            <div class="comment-form-card mb-5">
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="submit-btn">Odeslat komentář</button>
+                </form>
             </div>
         {% else %}
-            <div class="alert alert-secondary border-secondary text-center mb-5 shadow-sm">
-                Pro přidání komentáře se musíš <a href="{% url 'login' %}" class="fw-bold text-info">přihlásit</a> nebo <a href="{% url 'register' %}" class="fw-bold text-info">zaregistrovat</a>.
+            <div class="login-nudge mb-5">
+                Pro přidání komentáře se <a href="{% url 'login' %}">přihlas</a> nebo <a href="{% url 'register' %}">zaregistruj</a>.
             </div>
         {% endif %}
 
         <div class="comment-list">
             {% for comment in comments %}
-                <div class="card bg-dark border-secondary mb-3 shadow-sm">
-                    <div class="card-header border-secondary text-muted small d-flex justify-content-between align-items-center">
-                        <span class="text-light fw-bold">🧑‍💻 {{ comment.author.username }}</span>
-                        <span>{{ comment.created_at|date:"d. m. Y H:i" }}</span>
+                <div class="comment-card mb-3">
+                    <div class="comment-header">
+                        <a href="{% url 'public_profile' comment.author.username %}" class="comment-author">
+                            {% if comment.author.profile.avatar %}
+                                <img src="{{ comment.author.profile.avatar.url }}" class="comment-avatar">
+                            {% else %}
+                                <div class="comment-avatar-placeholder">{{ comment.author.username|slice:":1"|upper }}</div>
+                            {% endif %}
+                            <span>{{ comment.author.username }}</span>
+                        </a>
+                        <div class="comment-meta">
+                            <span class="meta-text">{{ comment.created_at|date:"d. m. Y H:i" }}</span>
+                            {% if user.is_authenticated %}
+                                <form action="{% url 'like_comment' comment.id %}" method="POST" class="d-inline ms-2">
+                                    {% csrf_token %}
+                                    <button type="submit" class="comment-like-btn {% if user in comment.likes.all %}liked{% endif %}">
+                                        {% if user in comment.likes.all %}♥{% else %}♡{% endif %} {{ comment.likes.count }}
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="meta-text ms-2">♥ {{ comment.likes.count }}</span>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text text-light">{{ comment.content }}</p>
-                    </div>
+                    <p class="comment-body">{{ comment.content }}</p>
                 </div>
             {% empty %}
-                <p class="text-muted fst-italic text-center py-4 bg-dark rounded border border-secondary shadow-sm">
-                    Zatím tu nejsou žádné komentáře. Buď první, kdo to rozbije! ⛏️
-                </p>
+                <p class="empty-comments">Zatím tu nejsou žádné komentáře. Buď první! ⛏️</p>
             {% endfor %}
         </div>
     </section>
 
 </article>
 
-<a href="{% url 'home' %}" class="btn btn-secondary mt-3 mb-5">← Zpět na přehled</a>
+<a href="{% url 'home' %}" class="back-link mt-5 mb-5 d-inline-block">← Zpět na přehled</a>
+
+<style>
+    .article-detail {
+        max-width: 740px;
+        margin: 0 auto;
+    }
+
+    /* HEADER */
+    .article-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        font-weight: 400;
+        color: var(--text-primary);
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+    }
+
+    .category-pill {
+        display: inline-block;
+        background: rgba(138,170,141,0.12);
+        color: var(--sage);
+        border: 1px solid rgba(138,170,141,0.25);
+        border-radius: 99px;
+        padding: 0.2rem 0.75rem;
+        font-size: 0.78rem;
+        font-weight: 500;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+
+    .meta-dot { color: var(--text-muted); }
+    .meta-text { color: var(--text-secondary); font-size: 0.85rem; }
+
+    /* AUTHOR ROW */
+    .author-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+    }
+
+    .author-link {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        text-decoration: none;
+        color: var(--text-primary);
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+    }
+
+    .author-link:hover { color: var(--sage); }
+
+    .author-avatar {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1.5px solid var(--border-mid);
+    }
+
+    .author-avatar-placeholder {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        background: var(--sage-deep);
+        color: var(--mint);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.8rem;
+        font-weight: 600;
+        border: 1.5px solid var(--border-mid);
+    }
+
+    .author-name { color: var(--text-primary); }
+
+    /* LIKE BUTTON */
+    .like-btn {
+        display: flex; align-items: center; gap: 0.4rem;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-mid);
+        color: var(--text-secondary);
+        border-radius: 99px;
+        padding: 0.3rem 0.8rem;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .like-btn:hover { border-color: #c47a7a; color: #c47a7a; }
+    .like-btn.liked { border-color: #c47a7a; color: #c47a7a; background: rgba(196,122,122,0.1); }
+    .like-static { color: var(--text-secondary); font-size: 0.85rem; }
+    .like-icon { font-size: 0.9rem; }
+
+    /* AUTHOR ACTIONS */
+    .author-actions { display: flex; gap: 0.5rem; }
+
+    .action-btn {
+        display: inline-block;
+        padding: 0.3rem 0.85rem;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-mid);
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        font-size: 0.82rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .action-btn:hover { border-color: var(--sage-muted); color: var(--sage); background: rgba(138,170,141,0.07); }
+    .action-btn.danger:hover { border-color: #c47a7a; color: #c47a7a; background: rgba(196,122,122,0.07); }
+
+    /* ARTICLE BODY */
+    .article-body {
+        color: var(--text-primary);
+        font-size: 1.025rem;
+        line-height: 1.8;
+        padding: 2rem 0;
+    }
+
+    .article-body p { margin-bottom: 1.25rem; }
+    .article-body h2, .article-body h3 { color: var(--sage); margin: 2rem 0 0.75rem; }
+    .article-body a { color: var(--sage-mid); }
+    .article-body a:hover { color: var(--sage); }
+    .article-body code {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: 5px;
+        padding: 0.15em 0.45em;
+        font-size: 0.9em;
+        color: var(--mint);
+    }
+    .article-body blockquote {
+        border-left: 3px solid var(--sage-muted);
+        padding-left: 1.25rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        margin: 1.5rem 0;
+    }
+
+    /* DIVIDER */
+    .section-divider {
+        height: 1px;
+        background: var(--border-subtle);
+    }
+
+    /* COMMENTS */
+    .comments-heading {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.4rem;
+        font-weight: 400;
+        color: var(--sage);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .comment-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(138,170,141,0.12);
+        color: var(--sage-mid);
+        border: 1px solid rgba(138,170,141,0.2);
+        border-radius: 99px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.8rem;
+        font-weight: 500;
+        padding: 0.1rem 0.6rem;
+        min-width: 28px;
+    }
+
+    /* COMMENT FORM */
+    .comment-form-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.4rem;
+    }
+
+    .comment-form-card p { margin-bottom: 0.75rem; }
+    .comment-form-card label {
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        display: block;
+        margin-bottom: 0.35rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+
+    .submit-btn {
+        background: var(--sage-warm);
+        border: none;
+        color: #1a2a1c;
+        font-weight: 600;
+        font-size: 0.875rem;
+        border-radius: var(--radius-sm);
+        padding: 0.5rem 1.25rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover {
+        background: var(--sage-mid);
+        transform: translateY(-1px);
+    }
+
+    /* LOGIN NUDGE */
+    .login-nudge {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-left: 3px solid var(--sage-muted);
+        border-radius: var(--radius-sm);
+        padding: 1rem 1.25rem;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+    }
+
+    .login-nudge a { color: var(--sage-mid); font-weight: 500; }
+    .login-nudge a:hover { color: var(--sage); }
+
+    /* COMMENT CARDS */
+    .comment-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        transition: border-color 0.2s;
+    }
+
+    .comment-card:hover { border-color: var(--border-mid); }
+
+    .comment-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        border-bottom: 1px solid var(--border-subtle);
+        background: var(--bg-card-hover);
+    }
+
+    .comment-author {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--text-primary);
+        font-size: 0.88rem;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    .comment-author:hover { color: var(--sage); }
+
+    .comment-avatar {
+        width: 24px; height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid var(--border-mid);
+    }
+
+    .comment-avatar-placeholder {
+        width: 24px; height: 24px;
+        border-radius: 50%;
+        background: var(--sage-deep);
+        color: var(--mint);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .comment-meta {
+        display: flex;
+        align-items: center;
+    }
+
+    .comment-like-btn {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        font-size: 0.82rem;
+        cursor: pointer;
+        padding: 0.15rem 0.4rem;
+        border-radius: 5px;
+        transition: color 0.2s;
+    }
+
+    .comment-like-btn:hover { color: #c47a7a; }
+    .comment-like-btn.liked { color: #c47a7a; }
+
+    .comment-body {
+        padding: 1rem;
+        margin: 0;
+        color: var(--text-primary);
+        font-size: 0.92rem;
+        line-height: 1.65;
+    }
+
+    .empty-comments {
+        text-align: center;
+        color: var(--text-muted);
+        font-style: italic;
+        padding: 2.5rem;
+        background: var(--bg-card);
+        border: 1px dashed var(--border-subtle);
+        border-radius: var(--radius-md);
+        font-size: 0.9rem;
+    }
+
+    /* BACK LINK */
+    .back-link {
+        color: var(--text-secondary);
+        font-size: 0.88rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--sage); }
+
+    .mb-6 { margin-bottom: 3rem; }
+</style>
 {% endblock %}

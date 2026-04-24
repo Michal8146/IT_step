@@ -5,6 +5,8 @@ from django.contrib.auth.models import User         # Toto chybělo
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from .models import Profile
+from django.shortcuts import get_object_or_404
+from blog.models import Article
 
 def register(request):
     if request.method == 'POST':
@@ -66,3 +68,15 @@ def profile(request):
         'p_form': p_form
     }
     return render(request, 'users/profile.html', context)
+
+
+def user_profile(request, username):
+    # Najde uživatele podle jména, nebo hodí chybu 404
+    profile_user = get_object_or_404(User, username=username)
+    # Najde všechny články, které tento uživatel napsal
+    user_articles = Article.objects.filter(author=profile_user).order_by('-created_at')
+    
+    return render(request, 'users/public_profile.html', {
+        'profile_user': profile_user,
+        'user_articles': user_articles
+    })

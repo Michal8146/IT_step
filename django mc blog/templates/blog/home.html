@@ -1,24 +1,210 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<h1 class="mb-4 text-warning">Nejnovější články ze světa</h1>
-<div class="row">
+
+<div class="home-header mb-5">
+    <h1 class="home-title">Nejnovější články</h1>
+    <p class="home-subtitle">ze světa Minecraftu</p>
+</div>
+
+<div class="articles-grid">
     {% for article in articles %}
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card h-100 border-secondary shadow-sm">
-            <div class="card-body">
-                <span class="badge {{ article.category.color_class }} mb-2">{{ article.category.name }}</span>
-                <h5 class="card-title">{{ article.title }}</h5>
-                <p class="card-text text-muted small">{{ article.excerpt }}</p>
-                <a href="{% url 'article_detail' article.id %}" class="btn btn-outline-warning btn-sm">Číst více</a>
-            </div>
-            <div class="card-footer text-muted small">
-                Autor: {{ article.author.username }} | {{ article.created_at|date:"d. m. Y" }}
-            </div>
+    <a href="{% url 'article_detail' article.id %}" class="article-card">
+        <div class="card-top">
+            <span class="category-pill">{{ article.category.name }}</span>
+            <span class="card-likes">♥ {{ article.likes.count }}</span>
         </div>
-    </div>
+
+        <h2 class="card-title">{{ article.title }}</h2>
+        <p class="card-excerpt">{{ article.excerpt }}</p>
+
+        <div class="card-footer-row">
+            <div class="card-author">
+                {% if article.author.profile.avatar %}
+                    <img src="{{ article.author.profile.avatar.url }}" class="card-avatar">
+                {% else %}
+                    <div class="card-avatar-placeholder">{{ article.author.username|slice:":1"|upper }}</div>
+                {% endif %}
+                <span class="card-author-name">{{ article.author.username }}</span>
+            </div>
+            <span class="card-date">{{ article.created_at|date:"d. m. Y" }}</span>
+        </div>
+    </a>
     {% empty %}
-    <p>Zatím nebyly publikovány žádné články.</p>
+    <div class="empty-state">
+        <span class="empty-icon">⛏️</span>
+        <p>Zatím nebyly publikovány žádné články.</p>
+    </div>
     {% endfor %}
 </div>
+
+<style>
+    .home-header {
+        padding: 1rem 0 0.5rem;
+    }
+
+    .home-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: clamp(1.9rem, 4vw, 2.8rem);
+        font-weight: 400;
+        color: var(--sage);
+        line-height: 1.1;
+        margin: 0;
+    }
+
+    .home-subtitle {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin: 0.25rem 0 0;
+        font-style: italic;
+    }
+
+    /* GRID */
+    .articles-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.25rem;
+    }
+
+    /* CARD */
+    .article-card {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.3rem;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color 0.22s, box-shadow 0.22s, transform 0.18s;
+        cursor: pointer;
+    }
+
+    .article-card:hover {
+        border-color: rgba(138,170,141,0.35);
+        box-shadow: 0 6px 24px rgba(0,0,0,0.4), 0 0 16px rgba(138,170,141,0.08);
+        transform: translateY(-3px);
+        color: inherit;
+    }
+
+    /* TOP ROW */
+    .card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.85rem;
+    }
+
+    .category-pill {
+        display: inline-block;
+        background: rgba(138,170,141,0.1);
+        color: var(--sage);
+        border: 1px solid rgba(138,170,141,0.22);
+        border-radius: 99px;
+        padding: 0.18rem 0.7rem;
+        font-size: 0.73rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .card-likes {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+    }
+
+    /* CONTENT */
+    .card-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.15rem;
+        font-weight: 400;
+        color: var(--text-primary);
+        line-height: 1.3;
+        margin: 0 0 0.6rem;
+        transition: color 0.2s;
+    }
+
+    .article-card:hover .card-title {
+        color: var(--sage);
+    }
+
+    .card-excerpt {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        line-height: 1.65;
+        margin: 0 0 1.1rem;
+        flex: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* FOOTER ROW */
+    .card-footer-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 0.85rem;
+        border-top: 1px solid var(--border-subtle);
+        margin-top: auto;
+    }
+
+    .card-author {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .card-avatar {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid var(--border-mid);
+    }
+
+    .card-avatar-placeholder {
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: var(--sage-deep);
+        color: var(--mint);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.65rem;
+        font-weight: 600;
+    }
+
+    .card-author-name {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+    }
+
+    .card-date {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 3.5rem;
+        background: var(--bg-card);
+        border: 1px dashed var(--border-subtle);
+        border-radius: var(--radius-md);
+        color: var(--text-muted);
+        font-style: italic;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .empty-icon { font-size: 1.5rem; }
+</style>
+
 {% endblock %}

@@ -13,6 +13,7 @@ urlpatterns = [
     path('login/', user_views.custom_login, name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
     path('profile/', user_views.profile, name='profile'),
+    path('user/<str:username>/', user_views.user_profile, name='public_profile'),
 ]
 
 # Toto umožní zobrazovat nahrané obrázky ze složky media/ ve vývojovém prostředí

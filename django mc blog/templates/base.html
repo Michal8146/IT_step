@@ -5,39 +5,287 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minecraft Survival Blog</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-base:       #1e1e1e;
+            --bg-surface:    #242424;
+            --bg-card:       #2a2a2a;
+            --bg-card-hover: #2f2f2f;
+
+            --border-subtle: #333333;
+            --border-mid:    #3d3d3d;
+
+            --sage:          #a8bfaa;
+            --sage-mid:      #8faa92;
+            --sage-warm:     #7a9e7e;
+            --sage-muted:    #5a7a5e;
+            --sage-deep:     #3d5e41;
+            --mint:          #c4d9c6;
+            --cream:         #e8ede9;
+
+            --text-primary:  #dde4de;
+            --text-secondary:#8a9e8c;
+            --text-muted:    #545f55;
+
+            --shadow-sm:     0 2px 8px rgba(0,0,0,0.4);
+            --shadow-md:     0 4px 20px rgba(0,0,0,0.55);
+            --shadow-sage:   0 0 18px rgba(138,170,141,0.1);
+
+            --radius-sm:     10px;
+            --radius-md:     14px;
+            --radius-lg:     20px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 400;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 320px;
+            background: radial-gradient(ellipse 80% 200px at 50% -60px, rgba(138,170,141,0.05) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background-color: var(--bg-surface) !important;
+            border-bottom: 1px solid var(--border-subtle) !important;
+            padding: 0.75rem 0;
+            position: relative;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.35rem;
+            color: var(--sage) !important;
+            transition: color 0.25s;
+        }
+
+        .navbar-brand:hover { color: var(--cream) !important; }
+
+        .nav-link {
+            font-weight: 500;
+            font-size: 0.88rem;
+            color: var(--text-secondary) !important;
+            padding: 0.45rem 1rem !important;
+            border-radius: var(--radius-sm);
+            transition: color 0.2s, background 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--sage) !important;
+            background: rgba(138,170,141,0.07);
+        }
+
+        .nav-link.text-warning {
+            color: var(--mint) !important;
+            font-weight: 600;
+        }
+
+        .nav-link.text-warning:hover {
+            color: var(--cream) !important;
+            background: rgba(138,170,141,0.1);
+        }
+
+        .navbar .rounded-circle {
+            border-color: var(--border-mid) !important;
+            transition: border-color 0.25s, box-shadow 0.25s;
+        }
+
+        .navbar a:hover .rounded-circle {
+            border-color: var(--sage-mid) !important;
+            box-shadow: 0 0 10px rgba(138,170,141,0.2);
+        }
+
+        .navbar .text-light {
+            color: var(--text-primary) !important;
+            font-weight: 500;
+            font-size: 0.88rem;
+        }
+
+        .btn-link.nav-link {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* ALERTS */
+        .alert {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-mid);
+            border-left: 3px solid var(--sage-mid);
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .container { position: relative; z-index: 1; }
+
+        /* CARDS */
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-sm);
+            transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
+        }
+
+        .card:hover {
+            border-color: var(--border-mid);
+            box-shadow: var(--shadow-md), var(--shadow-sage);
+            transform: translateY(-2px);
+        }
+
+        .card-body { padding: 1.4rem; }
+
+        /* HEADINGS */
+        h1, h2, h3 {
+            font-family: 'DM Serif Display', serif;
+            font-weight: 400;
+            color: var(--sage);
+        }
+
+        h4, h5, h6 {
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* BUTTONS */
+        .btn-primary {
+            background: var(--sage-warm);
+            border: 1px solid var(--sage-mid);
+            color: #1a2a1c;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border-radius: var(--radius-sm);
+            transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
+        }
+
+        .btn-primary:hover {
+            background: var(--sage-mid);
+            border-color: var(--sage);
+            box-shadow: 0 4px 14px rgba(138,170,141,0.25);
+            transform: translateY(-1px);
+            color: #1a2a1c;
+        }
+
+        .btn-secondary {
+            background: var(--bg-card-hover);
+            border: 1px solid var(--border-mid);
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            font-weight: 500;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-mid);
+            border-color: var(--sage-muted);
+            color: var(--sage);
+        }
+
+        /* LINKS */
+        a { color: var(--sage-mid); transition: color 0.2s; text-decoration: none; }
+        a:hover { color: var(--sage); }
+
+        /* FORM INPUTS */
+        .form-control, .form-select {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-mid);
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background-color: var(--bg-card);
+            border-color: var(--sage-muted);
+            box-shadow: 0 0 0 3px rgba(138,170,141,0.1);
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .form-control::placeholder { color: var(--text-muted); }
+
+        hr { border-color: var(--border-subtle); opacity: 1; }
+
+        /* FOOTER */
+        footer {
+            margin-top: auto;
+            background-color: var(--bg-surface);
+            border-top: 1px solid var(--border-subtle) !important;
+            font-size: 0.8rem;
+        }
+
+        footer p { margin: 0; color: var(--text-muted) !important; }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 6px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--sage-muted); }
+
+        /* PAGE LOAD */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .container > * { animation: fadeUp 0.45s ease both; }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark border-bottom mb-4">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'home' %}">⛏️ MC BLOG</a>
-            
-            <div class="navbar-nav ms-auto">
+            <a class="navbar-brand" href="{% url 'home' %}">⛏️ MC Blog</a>
+
+            <div class="navbar-nav ms-auto align-items-center gap-1">
                 <a class="nav-link" href="{% url 'home' %}">Domů</a>
-                
+
                 {% if user.is_authenticated %}
                     <a href="{% url 'create_article' %}" class="nav-link text-warning fw-bold">Napsat článek</a>
 
-                    <a href="{% url 'profile' %}" class="nav-link d-flex align-items-center me-3" style="text-decoration: none;">
+                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="nav-link btn btn-link" style="text-decoration: none;">Odhlásit se</button>
+                    </form>
+
+                    <a href="{% url 'profile' %}" class="nav-link d-flex align-items-center ms-1" style="text-decoration: none;">
                         {% if user.profile.avatar %}
-                            <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="rounded-circle border border-warning me-2" style="width: 35px; height: 35px; object-fit: cover;">
+                            <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="rounded-circle border border-warning me-2" style="width: 34px; height: 34px; object-fit: cover;">
                         {% else %}
-                            <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center border border-warning me-2" style="width: 35px; height: 35px;">
+                            <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center border border-warning me-2" style="width: 34px; height: 34px;">
                                 <span class="fs-6">👤</span>
                             </div>
                         {% endif %}
                         <span class="text-light fw-bold">{{ user.username }}</span>
                     </a>
-                    
-                    <form action="{% url 'logout' %}" method="post" class="d-inline">
-                        {% csrf_token %}
-                        <button type="submit" class="nav-link btn btn-link" style="text-decoration: none;">Odhlásit se</button>
-                    </form>
+
                 {% else %}
                     <a class="nav-link" href="{% url 'login' %}">Přihlášení</a>
                     <a class="nav-link" href="{% url 'register' %}">Registrace</a>
                 {% endif %}
             </div>
-            
         </div>
     </nav>
 
@@ -52,7 +300,7 @@
         {% endblock %}
     </div>
 
-    <footer class="container text-center py-4 mt-5 border-top border-secondary text-muted">
+    <footer class="container-fluid text-center py-4 mt-5 border-top">
         <p>&copy; 2026 Minecraft Survival Blog</p>
     </footer>
 </body>

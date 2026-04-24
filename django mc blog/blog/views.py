@@ -88,3 +88,23 @@ def delete_article(request, id):
         return redirect('home')
     
     return render(request, 'blog/article_confirm_delete.html', {'article': article})
+
+
+@login_required
+def like_article(request, id):
+    article = get_object_or_404(Article, id=id)
+    if request.user in article.likes.all():
+        article.likes.remove(request.user) # Odlajkování
+    else:
+        article.likes.add(request.user)    # Lajkování
+    # Vrátí uživatele zpět na stránku, kde kliknul (např. detail článku)
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+@login_required
+def like_comment(request, id):
+    comment = get_object_or_404(Comment, id=id)
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
