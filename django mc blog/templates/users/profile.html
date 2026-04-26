@@ -1,37 +1,242 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card bg-dark border-secondary shadow mt-4">
-            <div class="card-body">
-                <div class="d-flex align-items-center mb-4">
-                    {% if user.profile.avatar %}
-                        <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="rounded-circle border border-warning" style="width: 100px; height: 100px; object-fit: cover;">
-                    {% else %}
-                        <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center border border-warning" style="width: 100px; height: 100px;">
-                            <span class="fs-1">👤</span>
-                        </div>
-                    {% endif %}
-                    <div class="ms-4">
-                        <h2 class="text-warning mb-0">{{ user.username }}</h2>
-                        <p class="text-muted">{{ user.email }}</p>
-                    </div>
-                </div>
 
-                <hr class="border-secondary">
+<div class="profile-wrapper">
 
-                <form method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    
-                    <h5 class="text-info mb-3">Nastavení profilu</h5>
-                    {{ u_form.as_p }}
-                    {{ p_form.as_p }}
-                    
-                    <button type="submit" class="btn btn-warning mt-3 fw-bold">Uložit změny</button>
-                </form>
-            </div>
+    <!-- PROFILE HEADER -->
+    <div class="profile-header mb-4">
+        <div class="profile-avatar-wrap">
+            {% if user.profile.avatar %}
+                <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="profile-avatar">
+            {% else %}
+                <div class="profile-avatar-placeholder">{{ user.username|slice:":1"|upper }}</div>
+            {% endif %}
+        </div>
+        <div class="profile-info">
+            <h1 class="profile-username">{{ user.username }}</h1>
+            <p class="profile-email">{{ user.email }}</p>
         </div>
     </div>
+
+    <!-- SETTINGS CARD -->
+    <div class="settings-card">
+        <h3 class="settings-heading">Nastavení profilu</h3>
+        <div class="settings-divider"></div>
+
+        <form method="POST" enctype="multipart/form-data" class="settings-form">
+            {% csrf_token %}
+
+            <div class="form-section">
+                <p class="form-section-label">Informace o účtu</p>
+                {% for field in u_form %}
+                    <div class="field-group">
+                        <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<p class="field-help">{{ field.help_text }}</p>{% endif %}
+                        {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="form-section">
+                <p class="form-section-label">Profil</p>
+                {% for field in p_form %}
+                    <div class="field-group">
+                        <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.help_text %}<p class="field-help">{{ field.help_text }}</p>{% endif %}
+                        {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="settings-actions">
+                <button type="submit" class="save-btn">Uložit změny</button>
+                <a href="{% url 'home' %}" class="cancel-link">Zrušit</a>
+            </div>
+        </form>
+    </div>
 </div>
+
+<style>
+    .profile-wrapper {
+        max-width: 620px;
+        margin: 0 auto;
+        padding-bottom: 4rem;
+    }
+
+    /* HEADER */
+    .profile-header {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        padding: 1.5rem 0 1rem;
+    }
+
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--border-mid);
+    }
+
+    .profile-avatar-placeholder {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: var(--sage-deep);
+        color: var(--mint);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        font-weight: 600;
+        border: 2px solid var(--border-mid);
+        flex-shrink: 0;
+    }
+
+    .profile-username {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.7rem;
+        font-weight: 400;
+        color: var(--sage);
+        margin: 0 0 0.15rem;
+    }
+
+    .profile-email {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    /* SETTINGS CARD */
+    .settings-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.75rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .settings-heading {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.2rem;
+        font-weight: 400;
+        color: var(--text-primary);
+        margin: 0 0 1rem;
+    }
+
+    .settings-divider {
+        height: 1px;
+        background: var(--border-subtle);
+        margin-bottom: 1.5rem;
+    }
+
+    /* FORM */
+    .form-section { margin-bottom: 1.5rem; }
+
+    .form-section-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin: 0 0 0.85rem;
+    }
+
+    .field-group { margin-bottom: 1rem; }
+
+    .field-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        margin-bottom: 0.4rem;
+    }
+
+    .settings-form input[type="text"],
+    .settings-form input[type="email"],
+    .settings-form input[type="password"],
+    .settings-form textarea,
+    .settings-form select {
+        width: 100%;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-mid);
+        border-radius: var(--radius-sm);
+        color: var(--text-primary);
+        padding: 0.55rem 0.85rem;
+        font-size: 0.92rem;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+    }
+
+    .settings-form input[type="file"] {
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+    }
+
+    .settings-form input:focus,
+    .settings-form textarea:focus,
+    .settings-form select:focus {
+        outline: none;
+        border-color: var(--sage-muted);
+        box-shadow: 0 0 0 3px rgba(138,170,141,0.1);
+        background: var(--bg-card);
+    }
+
+    .field-help {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin: 0.3rem 0 0;
+        line-height: 1.5;
+    }
+
+    .field-error {
+        font-size: 0.78rem;
+        color: #d49090;
+        margin: 0.3rem 0 0;
+    }
+
+    /* ACTIONS */
+    .settings-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-subtle);
+        margin-top: 0.5rem;
+    }
+
+    .save-btn {
+        background: var(--sage-warm);
+        border: none;
+        color: #1a2a1c;
+        font-weight: 600;
+        font-size: 0.875rem;
+        font-family: 'DM Sans', sans-serif;
+        border-radius: var(--radius-sm);
+        padding: 0.55rem 1.35rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .save-btn:hover {
+        background: var(--sage-mid);
+        transform: translateY(-1px);
+    }
+
+    .cancel-link {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .cancel-link:hover { color: var(--sage); }
+</style>
+
 {% endblock %}

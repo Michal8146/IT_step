@@ -1,5 +1,80 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2>Byl jsi odhlášen</h2>
-    <a href="{% url 'login' %}">Přihlásit se znovu</a>
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-brand">👋</div>
+        <h2 class="auth-heading">Byl jsi odhlášen</h2>
+        <p class="auth-sub">Nashledanou, hráči. Vrať se brzy.</p>
+        <a href="{% url 'login' %}" class="auth-btn-link">Přihlásit se znovu</a>
+        <p class="auth-footer-link"><a href="{% url 'home' %}">← Zpět na přehled článků</a></p>
+    </div>
+</div>
+
+<style>
+    .auth-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2.5rem 0 5rem;
+    }
+
+    .auth-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem 2rem;
+        width: 100%;
+        max-width: 380px;
+        box-shadow: var(--shadow-md);
+        text-align: center;
+    }
+
+    .auth-brand {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .auth-heading {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.7rem;
+        font-weight: 400;
+        color: var(--sage);
+        margin: 0 0 0.3rem;
+    }
+
+    .auth-sub {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin: 0 0 1.75rem;
+    }
+
+    .auth-btn-link {
+        display: inline-block;
+        background: var(--sage-warm);
+        color: #1a2a1c;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border-radius: var(--radius-sm);
+        padding: 0.6rem 1.5rem;
+        text-decoration: none;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .auth-btn-link:hover {
+        background: var(--sage-mid);
+        color: #1a2a1c;
+        transform: translateY(-1px);
+    }
+
+    .auth-footer-link {
+        margin: 1.25rem 0 0;
+        font-size: 0.83rem;
+        color: var(--text-muted);
+    }
+
+    .auth-footer-link a { color: var(--text-muted); }
+    .auth-footer-link a:hover { color: var(--sage); }
+</style>
+
 {% endblock %}

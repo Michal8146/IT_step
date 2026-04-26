@@ -1,14 +1,190 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="bg-dark p-4 rounded border border-secondary">
-    <h2 class="mb-4 text-warning">{{ title }}</h2>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.media }}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-success mt-3">Publikovat článek</button>
-        <a href="{% url 'home' %}" class="btn btn-secondary mt-3 ms-2">Zrušit</a>
-    </form>
+
+<div class="form-wrapper">
+
+    <div class="form-header mb-4">
+        <h1 class="form-title">{{ title }}</h1>
+    </div>
+
+    <div class="form-card">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.media }}
+
+            {% for field in form %}
+                <div class="field-group {% if field.name == 'content' %}field-group--editor{% endif %}">
+                    <label class="field-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <p class="field-help">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="form-actions">
+                <button type="submit" class="publish-btn">Publikovat článek</button>
+                <a href="{% url 'home' %}" class="cancel-link">Zrušit</a>
+            </div>
+        </form>
+    </div>
+
 </div>
+
+<style>
+    .form-wrapper {
+        max-width: 780px;
+        margin: 0 auto;
+        padding-bottom: 4rem;
+    }
+
+    .form-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: clamp(1.5rem, 3vw, 2rem);
+        font-weight: 400;
+        color: var(--sage);
+        margin: 0;
+    }
+
+    /* CARD */
+    .form-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.75rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* FIELDS */
+    .field-group {
+        margin-bottom: 1.25rem;
+    }
+
+    .field-group--editor {
+        margin-bottom: 1.5rem;
+    }
+
+    .field-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 0.45rem;
+    }
+
+    /* Override Django rendered inputs */
+    .form-card input[type="text"],
+    .form-card input[type="url"],
+    .form-card input[type="email"],
+    .form-card select,
+    .form-card textarea {
+        width: 100%;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-mid);
+        border-radius: var(--radius-sm);
+        color: var(--text-primary);
+        padding: 0.6rem 0.9rem;
+        font-size: 0.92rem;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+    }
+
+    .form-card select {
+        cursor: pointer;
+    }
+
+    .form-card textarea {
+        min-height: 180px;
+        resize: vertical;
+        line-height: 1.65;
+    }
+
+    .form-card input:focus,
+    .form-card select:focus,
+    .form-card textarea:focus {
+        outline: none;
+        border-color: var(--sage-muted);
+        box-shadow: 0 0 0 3px rgba(138,170,141,0.1);
+        background: var(--bg-card);
+    }
+
+    /* CKEditor container theming */
+    .form-card .ck-editor__editable,
+    .form-card .django-ckeditor-widget,
+    .form-card .cke_chrome {
+        border-radius: var(--radius-sm) !important;
+        border-color: var(--border-mid) !important;
+        background: var(--bg-surface) !important;
+        color: var(--text-primary) !important;
+    }
+
+    .form-card .ck.ck-editor__main > .ck-editor__editable {
+        background: var(--bg-surface);
+        color: var(--text-primary);
+        min-height: 300px;
+        border-color: var(--border-mid);
+    }
+
+    .form-card .ck.ck-editor__main > .ck-editor__editable:focus {
+        border-color: var(--sage-muted) !important;
+        box-shadow: 0 0 0 3px rgba(138,170,141,0.1) !important;
+    }
+
+    .field-help {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin: 0.35rem 0 0;
+        line-height: 1.5;
+    }
+
+    .field-error {
+        font-size: 0.78rem;
+        color: #d49090;
+        margin: 0.3rem 0 0;
+    }
+
+    /* ACTIONS */
+    .form-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--border-subtle);
+        margin-top: 0.5rem;
+    }
+
+    .publish-btn {
+        background: var(--sage-warm);
+        border: none;
+        color: #1a2a1c;
+        font-weight: 600;
+        font-size: 0.9rem;
+        font-family: 'DM Sans', sans-serif;
+        border-radius: var(--radius-sm);
+        padding: 0.6rem 1.5rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .publish-btn:hover {
+        background: var(--sage-mid);
+        transform: translateY(-1px);
+    }
+
+    .cancel-link {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+
+    .cancel-link:hover { color: var(--sage); }
+</style>
+
 {% endblock %}

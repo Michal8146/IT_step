@@ -1,43 +1,274 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="row">
-    <div class="col-md-4 mb-4">
-        <div class="card bg-dark border-secondary shadow text-center p-4">
+
+<div class="pubprofile-wrapper">
+
+    <!-- SIDEBAR -->
+    <aside class="pubprofile-sidebar">
+        <div class="pubprofile-avatar-wrap">
             {% if profile_user.profile.avatar %}
-                <img src="{{ profile_user.profile.avatar.url }}" alt="Avatar" class="rounded-circle border border-warning mx-auto mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                <img src="{{ profile_user.profile.avatar.url }}" alt="Avatar" class="pubprofile-avatar">
             {% else %}
-                <div class="rounded-circle bg-secondary d-flex justify-content-center align-items-center border border-warning mx-auto mb-3" style="width: 150px; height: 150px;">
-                    <span style="font-size: 4rem;">👤</span>
-                </div>
-            {% endif %}
-            <h2 class="text-warning fw-bold">{{ profile_user.username }}</h2>
-            <p class="text-muted">Připojen: {{ profile_user.date_joined|date:"d. m. Y" }}</p>
-            
-            {% if request.user == profile_user %}
-                <a href="{% url 'profile' %}" class="btn btn-outline-info mt-2">⚙️ Upravit můj profil</a>
+                <div class="pubprofile-avatar-placeholder">{{ profile_user.username|slice:":1"|upper }}</div>
             {% endif %}
         </div>
-    </div>
 
-    <div class="col-md-8">
-        <h3 class="text-light mb-4">Vydané články ({{ user_articles.count }})</h3>
+        <h2 class="pubprofile-username">{{ profile_user.username }}</h2>
+        <p class="pubprofile-joined">Hráč od {{ profile_user.date_joined|date:"d. m. Y" }}</p>
+
+        <div class="pubprofile-stat">
+            <span class="stat-value">{{ user_articles.count }}</span>
+            <span class="stat-label">článků</span>
+        </div>
+
+        {% if request.user == profile_user %}
+            <a href="{% url 'profile' %}" class="edit-profile-btn">⚙ Upravit profil</a>
+        {% endif %}
+    </aside>
+
+    <!-- ARTICLES -->
+    <main class="pubprofile-main">
+        <h3 class="articles-heading">
+            Vydané články
+            <span class="article-count">{{ user_articles.count }}</span>
+        </h3>
+
         {% for article in user_articles %}
-            <div class="card bg-dark border-secondary mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <a href="{% url 'article_detail' article.id %}" class="text-warning text-decoration-none">{{ article.title }}</a>
-                    </h5>
-                    <p class="card-text text-light small">{{ article.excerpt }}</p>
-                    <div class="text-muted fst-italic small">
-                        Vydáno: {{ article.created_at|date:"d. m. Y" }}
-                    </div>
+            <a href="{% url 'article_detail' article.id %}" class="pub-article-card">
+                <div class="pub-card-top">
+                    <span class="pub-category-pill">{{ article.category.name }}</span>
+                    <span class="pub-card-date">{{ article.created_at|date:"d. m. Y" }}</span>
                 </div>
-            </div>
+                <h4 class="pub-card-title">{{ article.title }}</h4>
+                <p class="pub-card-excerpt">{{ article.excerpt }}</p>
+            </a>
         {% empty %}
-            <div class="alert alert-secondary border-secondary text-center">
-                Tento hráč zatím nevydal žádné články.
+            <div class="empty-state">
+                <span class="empty-icon">⛏️</span>
+                <p>Tento hráč zatím nevydal žádné články.</p>
             </div>
         {% endfor %}
-    </div>
+    </main>
+
 </div>
+
+<style>
+    .pubprofile-wrapper {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 2rem;
+        align-items: start;
+        padding-bottom: 4rem;
+    }
+
+    @media (max-width: 640px) {
+        .pubprofile-wrapper {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* SIDEBAR */
+    .pubprofile-sidebar {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.75rem 1.25rem;
+        text-align: center;
+        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 1.5rem;
+    }
+
+    .pubprofile-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--border-mid);
+        margin-bottom: 0.9rem;
+    }
+
+    .pubprofile-avatar-placeholder {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: var(--sage-deep);
+        color: var(--mint);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 600;
+        border: 2px solid var(--border-mid);
+        margin: 0 auto 0.9rem;
+    }
+
+    .pubprofile-username {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.25rem;
+        font-weight: 400;
+        color: var(--sage);
+        margin: 0 0 0.25rem;
+    }
+
+    .pubprofile-joined {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        margin: 0 0 1rem;
+    }
+
+    .pubprofile-stat {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 0.3rem;
+        background: rgba(138,170,141,0.08);
+        border: 1px solid rgba(138,170,141,0.18);
+        border-radius: 99px;
+        padding: 0.25rem 0.9rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .stat-value {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--sage);
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .edit-profile-btn {
+        display: block;
+        background: var(--bg-card-hover);
+        border: 1px solid var(--border-mid);
+        color: var(--text-secondary);
+        font-size: 0.82rem;
+        font-weight: 500;
+        border-radius: var(--radius-sm);
+        padding: 0.45rem 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .edit-profile-btn:hover {
+        border-color: var(--sage-muted);
+        color: var(--sage);
+        background: rgba(138,170,141,0.07);
+    }
+
+    /* MAIN */
+    .articles-heading {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.3rem;
+        font-weight: 400;
+        color: var(--sage);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin: 0 0 1.1rem;
+    }
+
+    .article-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(138,170,141,0.12);
+        color: var(--sage-mid);
+        border: 1px solid rgba(138,170,141,0.2);
+        border-radius: 99px;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        padding: 0.1rem 0.6rem;
+    }
+
+    /* ARTICLE CARDS */
+    .pub-article-card {
+        display: block;
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 1.15rem 1.25rem;
+        margin-bottom: 0.85rem;
+        text-decoration: none;
+        color: inherit;
+        transition: border-color 0.2s, box-shadow 0.2s, transform 0.18s;
+    }
+
+    .pub-article-card:hover {
+        border-color: rgba(138,170,141,0.3);
+        box-shadow: var(--shadow-md), var(--shadow-sage);
+        transform: translateY(-2px);
+        color: inherit;
+    }
+
+    .pub-card-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.55rem;
+    }
+
+    .pub-category-pill {
+        display: inline-block;
+        background: rgba(138,170,141,0.1);
+        color: var(--sage);
+        border: 1px solid rgba(138,170,141,0.22);
+        border-radius: 99px;
+        padding: 0.15rem 0.65rem;
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+    }
+
+    .pub-card-date {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+
+    .pub-card-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.05rem;
+        font-weight: 400;
+        color: var(--text-primary);
+        margin: 0 0 0.35rem;
+        transition: color 0.2s;
+    }
+
+    .pub-article-card:hover .pub-card-title { color: var(--sage); }
+
+    .pub-card-excerpt {
+        font-size: 0.845rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-clamp: 2;
+    }
+
+    /* EMPTY */
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 3rem;
+        background: var(--bg-card);
+        border: 1px dashed var(--border-subtle);
+        border-radius: var(--radius-md);
+        color: var(--text-muted);
+        font-style: italic;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .empty-icon { font-size: 1.5rem; }
+</style>
+
 {% endblock %}

@@ -1,26 +1,164 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="max-width-form mx-auto" style="max-width: 400px;">
-        <h2 class="text-warning mb-4 text-center">Vstup do hry</h2>
-        
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+
+        <div class="auth-brand">⛏️</div>
+        <h2 class="auth-heading">Vstup do hry</h2>
+        <p class="auth-sub">Přihlas se ke svému účtu</p>
+
         {% if show_register_link %}
-            <div class="alert alert-info text-center shadow border-info">
-                <p class="mb-2">Vypadá to, že jsi tu nový!</p>
-                <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Ano, zaregistrovat se</a>
+            <div class="auth-notice">
+                <span>Vypadá to, že jsi tu nový!</span>
+                <a href="{% url 'register' %}" class="auth-notice-link">Zaregistrovat se →</a>
             </div>
         {% endif %}
 
-        <form method="POST">
+        <form method="POST" class="auth-form">
             {% csrf_token %}
-            <div class="mb-3">
-                <label class="form-label">Uživatelské jméno:</label>
-                <input type="text" name="username" class="form-control border-secondary" value="{{ username }}" required>
+            <div class="field-group">
+                <label class="field-label">Uživatelské jméno</label>
+                <input type="text" name="username" class="field-input" value="{{ username }}" required autocomplete="username">
             </div>
-            <div class="mb-3">
-                <label class="form-label">Heslo:</label>
-                <input type="password" name="password" class="form-control border-secondary" required>
+            <div class="field-group">
+                <label class="field-label">Heslo</label>
+                <input type="password" name="password" class="field-input" required autocomplete="current-password">
             </div>
-            <button type="submit" class="btn btn-success w-100 fw-bold shadow">PŘIHLÁSIT SE</button>
+            <button type="submit" class="auth-btn">Přihlásit se</button>
         </form>
+
+        <p class="auth-footer-link">
+            Nemáš účet? <a href="{% url 'register' %}">Zaregistruj se</a>
+        </p>
     </div>
+</div>
+
+<style>
+    .auth-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 2.5rem 0 5rem;
+    }
+
+    .auth-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-lg);
+        padding: 2.5rem 2rem;
+        width: 100%;
+        max-width: 400px;
+        box-shadow: var(--shadow-md);
+        text-align: center;
+    }
+
+    .auth-brand {
+        font-size: 2rem;
+        margin-bottom: 0.75rem;
+        opacity: 0.85;
+    }
+
+    .auth-heading {
+        font-family: 'DM Serif Display', serif;
+        font-size: 1.7rem;
+        font-weight: 400;
+        color: var(--sage);
+        margin: 0 0 0.3rem;
+    }
+
+    .auth-sub {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin: 0 0 1.75rem;
+    }
+
+    .auth-notice {
+        background: rgba(138,170,141,0.08);
+        border: 1px solid rgba(138,170,141,0.2);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        text-align: left;
+    }
+
+    .auth-notice-link {
+        color: var(--sage-mid);
+        font-weight: 500;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .auth-notice-link:hover { color: var(--sage); }
+
+    .auth-form { text-align: left; }
+
+    .field-group { margin-bottom: 1.1rem; }
+
+    .field-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        margin-bottom: 0.4rem;
+    }
+
+    .field-input {
+        width: 100%;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-mid);
+        border-radius: var(--radius-sm);
+        color: var(--text-primary);
+        padding: 0.55rem 0.85rem;
+        font-size: 0.92rem;
+        font-family: 'DM Sans', sans-serif;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .field-input:focus {
+        outline: none;
+        border-color: var(--sage-muted);
+        box-shadow: 0 0 0 3px rgba(138,170,141,0.1);
+        background: var(--bg-card);
+        color: var(--text-primary);
+    }
+
+    .auth-btn {
+        width: 100%;
+        background: var(--sage-warm);
+        border: none;
+        color: #1a2a1c;
+        font-weight: 600;
+        font-size: 0.9rem;
+        font-family: 'DM Sans', sans-serif;
+        border-radius: var(--radius-sm);
+        padding: 0.65rem;
+        margin-top: 0.5rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .auth-btn:hover {
+        background: var(--sage-mid);
+        transform: translateY(-1px);
+    }
+
+    .auth-footer-link {
+        margin: 1.25rem 0 0;
+        font-size: 0.83rem;
+        color: var(--text-muted);
+    }
+
+    .auth-footer-link a { color: var(--sage-mid); font-weight: 500; }
+    .auth-footer-link a:hover { color: var(--sage); }
+</style>
+
 {% endblock %}
